@@ -41,55 +41,27 @@ public class UI {
 				1,
 				new Label(String.format("%s, version %d", manifest.name, manifest.version))
 			);
-			mainPanel.addComponent(2, new Label(manifest.description));
+			mainPanel.addComponent(new Label(manifest.description));
 			
-			mainPanel.addComponent(3, new EmptySpace());
+			mainPanel.addComponent(new EmptySpace());
 			
-			mainPanel.addComponent(4, new Label("Options:"));
+			mainPanel.addComponent(new Label("Options:"));
 			
-			final CheckBoxList<Option> optionCheckBoxList = new CheckBoxList<>();
-			manifest.options.forEach(optionCheckBoxList::addItem);
-			
-			mainPanel.addComponent(5, optionCheckBoxList);
-			mainPanel.addComponent(6, new EmptySpace());
-			mainPanel.addComponent(7, new Label("SubOptions:"));
-			
-			final Panel subOptionsPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-			
-			final HashMap<Option, LabeledComponent> subOptionMap = new HashMap<>();
-			
-			optionCheckBoxList.addListener((itemIndex, checked) -> {
-				final Option option        = manifest.options.get(itemIndex);
-				final int    relativeIndex = itemIndex * 2;
-				
-				if (option.subOptions.isEmpty()) {
-					return;
-				}
-				
-				if (checked) {
-					final RadioBoxList<SubOption> subOptionRadioBoxList = new RadioBoxList<>();
-					option.subOptions.forEach(subOptionRadioBoxList::addItem);
-					subOptionRadioBoxList.setCheckedItemIndex(0);
-					
-					final Label label = new Label(option.name);
-					subOptionsPanel.addComponent(relativeIndex, label);
-					subOptionsPanel.addComponent(relativeIndex + 1, subOptionRadioBoxList);
-					subOptionMap.put(option, new LabeledComponent(label, subOptionRadioBoxList));
-				} else {
-					final LabeledComponent labeledComponent = subOptionMap.get(option);
-					subOptionsPanel.removeComponent(labeledComponent.label());
-					subOptionsPanel.removeComponent(labeledComponent.component());
-				}
+			manifest.options.forEach(option -> {
+				mainPanel.addComponent(new Label(option.toString()));
+				final ComboBox<SubOption> comboBox = new ComboBox<>();
+				comboBox.addItem(SubOption.DISABLED);
+				option.subOptions.forEach(comboBox::addItem);
+				mainPanel.addComponent(comboBox);
+				mainPanel.addComponent(new EmptySpace());
 			});
-			
-			mainPanel.addComponent(8, subOptionsPanel);
 			
 			// --- final steps ---
 			
-			mainPanel.addComponent(9, new EmptySpace());
+			mainPanel.addComponent(new EmptySpace());
 			final Button closeButton = new Button("close");
 			closeButton.addListener(button -> mainWindow.close());
-			mainPanel.addComponent(10, closeButton);
+			mainPanel.addComponent(closeButton);
 			
 			gui.addWindow(mainWindow);
 			screen.startScreen();
