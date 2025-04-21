@@ -6,11 +6,11 @@ import java.util.*;
 
 public class Option {
 	@JsonProperty("Name")
-	String name;
+	String          name;
 	@JsonProperty("Description")
-	String description;
+	String          description;
 	@JsonProperty("Include")
-	List<String> include;
+	List<String>    include;
 	@JsonProperty("SubOptions")
 	List<SubOption> subOptions;
 	

@@ -59,7 +59,8 @@ public class Manifest {
 	}
 	
 	private static String nameFromZip(final File zipFile) {
-		return zipFile.getName()
+		return zipFile
+			.getName()
 			.replaceAll("\\.(zip|rar|7z)", "")
 			.replaceFirst("-\\d+-[^a-zA-Z]*-\\d+$", ""); // NexusMods: remove numbers
 	}
