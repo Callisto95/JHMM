@@ -12,10 +12,17 @@ public class Option {
 	@JsonProperty("Include")
 	List<String>    include;
 	@JsonProperty("SubOptions")
-	List<SubOption> subOptions;
+	/**
+	 * Guaranteed to be an array with length of at least 2
+	 * First index will always be {@link SubOption#DISABLED}
+	 */
+	List<SubOption> subOptions = new ArrayList<>();
+	@JsonIgnore
+	boolean         selected   = false;
 	
 	@Override
 	public String toString() {
+		// return String.format("%s: %s (%b)", this.name, this.description, this.selected);
 		return String.format("%s: %s", this.name, this.description);
 	}
 }

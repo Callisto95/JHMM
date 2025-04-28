@@ -9,7 +9,7 @@ import com.googlecode.lanterna.terminal.*;
 import java.io.*;
 import java.util.*;
 
-public class UI {
+public class TerminalUI implements ManifestUI {
 	public static final Theme THEME = SimpleTheme.makeTheme(
 		true,
 		TextColor.ANSI.DEFAULT,
@@ -21,7 +21,9 @@ public class UI {
 		TextColor.ANSI.DEFAULT
 	);
 	
-	public static void showUI(final Manifest manifest) throws IOException {
+	private static final int DISABLED_INDEX = 0;
+	
+	public void showUI(final Manifest manifest) {
 		try (
 			final Terminal terminal = new DefaultTerminalFactory().createTerminal()
 		) {
@@ -50,10 +52,28 @@ public class UI {
 			manifest.options.forEach(option -> {
 				mainPanel.addComponent(new Label(option.toString()));
 				final ComboBox<SubOption> comboBox = new ComboBox<>();
-				comboBox.addItem(SubOption.DISABLED);
-				option.subOptions.forEach(comboBox::addItem);
+				
+				if (option.subOptions.isEmpty()) {
+					comboBox.addItem(SubOption.ENABLED);
+				} else {
+					option.subOptions.forEach(comboBox::addItem);
+				}
+				
 				mainPanel.addComponent(comboBox);
 				mainPanel.addComponent(new EmptySpace());
+				
+				comboBox.addListener((selectedIndex, previousSelection, changedByUserInteraction) -> {
+					final SubOption selectedSubOption = option.subOptions.get(selectedIndex);
+					final SubOption previousSubOption = option.subOptions.get(previousSelection);
+					
+					if (SubOption.DISABLED.equals(selectedSubOption)) {
+						option.selected            = false;
+					} else {
+						option.selected            = true;
+						selectedSubOption.selected = true;
+					}
+					previousSubOption.selected = false;
+				});
 			});
 			
 			// --- final steps ---
@@ -67,6 +87,8 @@ public class UI {
 			screen.startScreen();
 			
 			gui.waitForWindowToClose(mainWindow);
+		} catch (IOException exc) {
+			throw new RuntimeException(exc);
 		}
 	}
 	

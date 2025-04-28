@@ -35,7 +35,21 @@ public class Manifest {
 			manifest = mapper.readValue(zip.getInputStream(manifestEntry), Manifest.class);
 		}
 		
+		manifest.fixMissingSubOptions();
+		
 		return manifest;
+	}
+	
+	private void fixMissingSubOptions() {
+		for (Option option : this.options) {
+			if(option.subOptions.isEmpty()) {
+				option.subOptions.add(SubOption.ENABLED);
+			}
+			
+			if(option.subOptions.size() == 1) {
+				option.subOptions.addFirst(SubOption.DISABLED);
+			}
+		}
 	}
 	
 	private static Manifest createManifestFromFile(final File zipFile) {
@@ -59,8 +73,7 @@ public class Manifest {
 	}
 	
 	private static String nameFromZip(final File zipFile) {
-		return zipFile
-			.getName()
+		return zipFile.getName()
 			.replaceAll("\\.(zip|rar|7z)", "")
 			.replaceFirst("-\\d+-[^a-zA-Z]*-\\d+$", ""); // NexusMods: remove numbers
 	}

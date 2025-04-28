@@ -10,6 +10,8 @@ public class Main {
 		
 		// System.out.println(manifest);
 		
-		UI.showUI(manifest);
+		new TerminalUI().showUI(manifest);
+		
+		System.out.println(manifest);
 	}
 }
