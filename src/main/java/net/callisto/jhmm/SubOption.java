@@ -4,36 +4,38 @@ import com.fasterxml.jackson.annotation.*;
 
 import java.util.*;
 
-public class SubOption {
+public class SubOption implements DisplayAble {
 	/**
 	 * SubOption used to indicate a disabled option
 	 * Should never be contained within an Options' suboption list.
 	 */
 	public static final SubOption DISABLED = new SubOption() {
-		final String       name        = "disabled";
-		final String       description = "";
-		final List<String> include     = List.of();
-		
 		@Override
-		public String toString() {
-			return this.name;
+		public String getDisplayName() {
+			return name;
 		}
 	};
 	
 	/**
-	 * SubOption used to indicate a enabled option
+	 * SubOption used to indicate an enabled option
 	 * Should never be contained within an Options' suboption list.
 	 */
 	public static final SubOption ENABLED = new SubOption() {
-		final String       name        = "enabled";
-		final String       description = "";
-		final List<String> include     = List.of();
-		
 		@Override
-		public String toString() {
-			return this.name;
+		public String getDisplayName() {
+			return name;
 		}
 	};
+	
+	static {
+		DISABLED.name        = "disabled";
+		DISABLED.description = "";
+		DISABLED.include     = List.of();
+		
+		ENABLED.name        = "enabled";
+		ENABLED.description = "";
+		ENABLED.include     = List.of(".");
+	}
 	
 	@JsonProperty("Name")
 	String       name;
@@ -45,9 +47,13 @@ public class SubOption {
 	boolean      selected = false;
 	
 	@Override
-	public String toString() {
-		// return String.format("%s: %s (%b)", this.name, this.description, this.selected);
+	public String getDisplayName() {
 		return String.format("%s: %s", this.name, this.description);
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s: %s :: %s (enabled: %b)", this.name, this.description, this.include, this.selected);
 	}
 	
 	@Override
@@ -66,4 +72,8 @@ public class SubOption {
 	public int hashCode() {
 		return Objects.hash(name, description);
 	}
+	
+	// public List<?> getFiles() {
+	//
+	// }
 }

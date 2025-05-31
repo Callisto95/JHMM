@@ -21,8 +21,6 @@ public class TerminalUI implements ManifestUI {
 		TextColor.ANSI.DEFAULT
 	);
 	
-	private static final int DISABLED_INDEX = 0;
-	
 	public void showUI(final Manifest manifest) {
 		try (
 			final Terminal terminal = new DefaultTerminalFactory().createTerminal()
@@ -50,14 +48,15 @@ public class TerminalUI implements ManifestUI {
 			mainPanel.addComponent(new Label("Options:"));
 			
 			manifest.options.forEach(option -> {
-				mainPanel.addComponent(new Label(option.toString()));
-				final ComboBox<SubOption> comboBox = new ComboBox<>();
+				mainPanel.addComponent(new Label(option.getDisplayName()));
+				final ComboBox<String> comboBox = new ComboBox<>();
 				
-				if (option.subOptions.isEmpty()) {
-					comboBox.addItem(SubOption.ENABLED);
-				} else {
-					option.subOptions.forEach(comboBox::addItem);
-				}
+				// if (option.subOptions.isEmpty()) {
+				// 	comboBox.addItem(SubOption.ENABLED);
+				// } else {
+				// 	option.subOptions.forEach(comboBox::addItem);
+				// }
+				option.subOptions.forEach(subOption -> comboBox.addItem(subOption.getDisplayName()));
 				
 				mainPanel.addComponent(comboBox);
 				mainPanel.addComponent(new EmptySpace());

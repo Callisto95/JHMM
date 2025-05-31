@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 
 import java.util.*;
 
-public class Option {
+public class Option implements DisplayAble {
 	@JsonProperty("Name")
 	String          name;
 	@JsonProperty("Description")
@@ -21,8 +21,12 @@ public class Option {
 	boolean         selected   = false;
 	
 	@Override
-	public String toString() {
-		// return String.format("%s: %s (%b)", this.name, this.description, this.selected);
+	public String getDisplayName() {
 		return String.format("%s: %s", this.name, this.description);
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s: %s :: %s (enabled: %b)", this.name, this.description, this.include, this.selected);
 	}
 }
