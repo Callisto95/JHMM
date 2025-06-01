@@ -20,47 +20,25 @@ public class Manifest {
 	@JsonProperty("Options")
 	List<Option> options;
 	
-	public static void unzip(final ZipFile is, final Path targetDir) throws IOException {
-		final Path                      extractionDir = targetDir.toAbsolutePath();
-		Iterator<? extends ZipEntry> entries       = is.entries().asIterator();
-		
-		while (entries.hasNext()) {
-			final ZipEntry ze = entries.next();
-			Path resolvedPath = extractionDir.resolve(ze.getName()).normalize();
-			if (!resolvedPath.startsWith(extractionDir)) {
-				// see: https://snyk.io/research/zip-slip-vulnerability
-				throw new IllegalStateException("Entry with an illegal path: " + ze.getName());
-			}
-			if (ze.isDirectory()) {
-				Files.createDirectories(resolvedPath);
-			} else {
-				Files.createDirectories(resolvedPath.getParent());
-				Files.copy(is.getInputStream(ze), resolvedPath);
-			}
-		}
-	}
-	
-	public static Manifest fromZip(final File zipFile, final Path extractPath) throws IOException {
+	public static Optional<Manifest> fromDir(final Path directory) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES); // images
 		
 		Manifest manifest;
 		
-		try (final ZipFile zip = new ZipFile(zipFile)) {
-			unzip(zip, extractPath);
-			
-			final File manifestFile = extractPath.resolve("manifest.json").toFile();
-			
-			if (!manifestFile.exists()) {
-				return createManifestFromFile(zipFile);
-			}
-			
-			manifest = mapper.readValue(manifestFile, Manifest.class);
+		final File manifestFile = directory.resolve("manifest.json").toFile();
+		
+		Main.LOGGER.debug(manifestFile);
+		
+		if (!manifestFile.exists()) {
+			return Optional.empty();
 		}
+		
+		manifest = mapper.readValue(manifestFile, Manifest.class);
 		
 		manifest.fixMissingSubOptions();
 		
-		return manifest;
+		return Optional.of(manifest);
 	}
 	
 	private void fixMissingSubOptions() {
@@ -73,7 +51,7 @@ public class Manifest {
 		}
 	}
 	
-	private static Manifest createManifestFromFile(final File zipFile) {
+	public static Manifest createManifestFromZip(final File zipFile) {
 		final String modName = nameFromZip(zipFile);
 		
 		final Manifest manifest = new Manifest();

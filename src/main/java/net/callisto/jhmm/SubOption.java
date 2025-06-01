@@ -2,7 +2,10 @@ package net.callisto.jhmm;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
+import java.util.stream.*;
 
 public class SubOption implements DisplayAble {
 	/**
@@ -26,7 +29,6 @@ public class SubOption implements DisplayAble {
 			return name;
 		}
 	};
-	
 	static {
 		DISABLED.name        = "disabled";
 		DISABLED.description = "";
@@ -53,7 +55,13 @@ public class SubOption implements DisplayAble {
 	
 	@Override
 	public String toString() {
-		return String.format("%s: %s :: %s (enabled: %b)", this.name, this.description, this.include, this.selected);
+		return String.format(
+			"%s: %s :: %s (enabled: %b)",
+			this.name,
+			this.description,
+			this.include,
+			this.selected
+		);
 	}
 	
 	@Override
@@ -73,7 +81,18 @@ public class SubOption implements DisplayAble {
 		return Objects.hash(name, description);
 	}
 	
-	// public List<?> getFiles() {
-	//
-	// }
+	public static List<File> getFilesOfDirectory(final Path includePath) {
+		try (Stream<Path> paths = Files.walk(includePath)) {
+			return paths.filter(Files::isRegularFile).map(Path::toFile).toList();
+		} catch (IOException exc) {
+			throw new IllegalStateException(exc);
+		}
+	}
+	
+	public List<File> getFiles(final Path extractedPath) {
+		return this.include.stream()
+			.map(extractedPath::resolve)
+			.map(SubOption::getFilesOfDirectory)
+			.collect(ArrayList<File>::new, ArrayList::addAll, ArrayList::addAll);
+	}
 }

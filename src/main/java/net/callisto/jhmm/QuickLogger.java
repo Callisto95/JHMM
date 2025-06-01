@@ -1,11 +1,13 @@
 package net.callisto.jhmm;
 
 public class QuickLogger {
-	private static final String FORMAT = "%s[%s][%s] %s";
-	
 	private static final String COLOUR_CYAN = "\u001B[36m";
 	private static final String COLOUR_RED = "\u001B[31m";
 	private static final String COLOUR_GREEN = "\u001B[32m";
+	
+	private static final String RESET = "\u001B[0m";
+	
+	private static final String FORMAT = "%s[%s][%s] %s" + RESET;
 	
 	protected boolean verbose = false;
 	
