@@ -40,13 +40,13 @@ public class SubOption implements DisplayAble {
 	}
 	
 	@JsonProperty("Name")
-	String       name;
+	public String       name;
 	@JsonProperty("Description")
-	String       description;
+	public String       description;
 	@JsonProperty("Include")
-	List<String> include;
+	public List<String> include;
 	@JsonIgnore
-	boolean      selected = false;
+	public boolean      selected = false;
 	
 	@Override
 	public String getDisplayName() {
@@ -90,7 +90,8 @@ public class SubOption implements DisplayAble {
 	}
 	
 	public List<File> getFiles(final Path extractedPath) {
-		return this.include.stream()
+		return this.include
+			.stream()
 			.map(extractedPath::resolve)
 			.map(SubOption::getFilesOfDirectory)
 			.collect(ArrayList<File>::new, ArrayList::addAll, ArrayList::addAll);

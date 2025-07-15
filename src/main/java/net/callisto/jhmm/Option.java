@@ -6,19 +6,19 @@ import java.util.*;
 
 public class Option implements DisplayAble {
 	@JsonProperty("Name")
-	String          name;
+	public String          name;
 	@JsonProperty("Description")
-	String          description;
+	public String          description;
 	@JsonProperty("Include")
-	List<String>    include;
+	public List<String>    include;
 	@JsonProperty("SubOptions")
 	/**
 	 * Guaranteed to be an array with length of at least 2
 	 * First index will always be {@link SubOption#DISABLED}
 	 */
-	List<SubOption> subOptions = new ArrayList<>();
+	public List<SubOption> subOptions = new ArrayList<>();
 	@JsonIgnore
-	boolean         selected   = false;
+	public boolean         selected   = false;
 	
 	@Override
 	public String getDisplayName() {

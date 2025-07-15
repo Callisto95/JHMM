@@ -10,15 +10,15 @@ import java.util.zip.*;
 
 public class Manifest {
 	@JsonProperty("Version")
-	int          version;
+	public int          version;
 	@JsonProperty("Guid")
-	UUID         guid;
+	public UUID         guid;
 	@JsonProperty("Name")
-	String       name;
+	public String       name;
 	@JsonProperty("Description")
-	String       description;
+	public String       description;
 	@JsonProperty("Options")
-	List<Option> options;
+	public List<Option> options;
 	
 	public static Optional<Manifest> fromDir(final Path directory) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
