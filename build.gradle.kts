@@ -13,7 +13,7 @@ repositories {
 group = "net.callisto"
 version = "1.0-SNAPSHOT"
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_24
 java.targetCompatibility = java.sourceCompatibility
 
 application {
